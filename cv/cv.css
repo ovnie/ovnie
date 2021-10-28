@@ -1,0 +1,94 @@
+/* Concepteur : Josselin Fatah-Roux */
+
+body{
+	color: #000000;
+	background-color: #ffffff;
+}
+
+li{
+	margin-top: 10px;
+}
+
+li:first-child{
+	margin-top: 0px;
+}
+
+.nopuce{
+	list-style-type: none;
+}
+
+.sublist{
+	margin-top: 10px;
+}
+
+.page{
+	width: 900px;
+	margin: auto;
+	padding: 10px;
+	font-size: 16px;
+	font-family: "Times New Roman", sans-serif;
+	border: 2px solid #000000;
+	border-radius: 10px;
+}
+
+.infoetphoto{
+	height: 165px;
+	margin-bottom: 3px;
+	padding: 1px 0;
+	overflow: hidden;
+}
+
+.info{
+	float: left;
+}
+
+.photo{
+	padding-top: 20px;
+	float: right;
+}
+
+.titre{
+	width: 890px;
+	text-align: center;
+	margin-top: -13px;
+	margin-bottom: 3px;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 20px;
+}
+
+.sect{
+	background-color: #CCCCCC;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	font-size: 16px;
+}
+
+.formatexte{
+	text-align: justify;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.centintexte{
+	text-align: center;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.liencv{
+	width: 450px;
+	text-align: center;
+	margin: auto;
+}
+
+.validecss{
+	width: 88px;
+	height: 31px;
+	margin: auto;
+}
+
+.ima{
+	width: 88px;
+	height: 31px;
+}

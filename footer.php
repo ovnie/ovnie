@@ -1,0 +1,2 @@
+<a href="https://ovnie.com/informations.php#qui">Qui sommes-nous ?</a>/<a href="https://ovnie.com/informations.php#policy">Cookies</a>/<a href="https://ovnie.com/informations.php#recrutement">Recrutement</a>/<a href="https://ovnie.com/informations.php#contact">Contact</a>
+<br>© Droits d'auteur - Ovnie.com, 2020. Tous droits réservés.

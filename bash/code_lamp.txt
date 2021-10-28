@@ -1,0 +1,113 @@
+#Mise à jour de la liste des fichiers disponibles dans les dépôts APT présents dans le fichier de configuration /etc/apt/sources.list :
+sudo apt update
+
+#Installation d'Apache HTTP Server (serveur HTTP), de MySQL ou bien de MariaDB (gestionnaire de base de données) et de PHP (langage de programmation) avec son module pour communiquer avec MySQL :
+sudo apt install apache2 php libapache2-mod-php mysql-server php-mysql
+sudo apt install apache2 php libapache2-mod-php mariadb-server php-mysql
+
+#Installation de modules complémentaires qui peuvent être nécessaires :
+sudo apt install php-curl php-gd php-intl php-json php-mbstring php-xml php-zip
+
+#Autoriser le trafic sur le port 80 pour le pare-feu :
+sudo ufw app list
+sudo ufw allow in "Apache"
+sudo ufw status
+
+#Vérification de l'installation d'Apache en rentrant dans la barre d'adresse du navigateur :
+localhost
+
+#Création de la page info.php détaillant toutes les spécificités de notre environnement PHP :
+cd /var/www/html
+sudo nano info.php
+
+#Ajouter dans le fichier précédemment créé le code PHP suivant :
+<?php
+phpinfo();
+?>
+
+#Visualisation du fichier info.php en rentrant dans la barre d'adresse du navigateur :
+localhost/info.php
+
+#Avec MySQL depuis Bionic 18.04, et MariaDB depuis Xenial 16.04, l'authentification de l'utilisateur root de MySQL se fait au moyen du plugin auth_socket, donc avec sudo (root du système et non root de MySQL) :
+sudo mysql -u root -p
+show databases;
+exit;
+
+#Création d'une base test avec la table membres contenant les champs id et pseudo :
+sudo mysql -u root -p
+CREATE DATABASE test CHARACTER SET 'utf8';
+CREATE TABLE test.membres
+(
+    id INT PRIMARY KEY NOT NULL,
+    pseudo VARCHAR(250)
+);
+INSERT INTO test.membres VALUES ('1','carmen');
+show databases;
+exit;
+
+#Installation de phpMyAdmin en sélectionnant apache2 :
+sudo apt-get install phpmyadmin
+
+#Ajouter phpMyAdmin à Apache grâce au fichier apache2.conf :
+sudo nano /etc/apache2/apache2.conf
+
+#Ajouter à la fin du fichier apache2.conf :
+# Include phpMyAdmin
+Include /etc/phpmyadmin/apache.conf
+
+#Redémarrer Apache :
+sudo service apache2 restart
+sudo service apache2 status
+
+#L'authentification de l'utilisateur root de MySQL au moyen du plugin auth_socket ne permet pas de se connecter avec phpMyAdmin. Il nous faut donc pour cela créer un utilisateur super-administrateur ayant les pleins pouvoirs dans MySQL :
+sudo mysql -u root -p
+CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'my_password';
+GRANT ALL PRIVILEGES ON * . * TO 'my_user'@'localhost';
+FLUSH PRIVILEGES;
+QUIT;
+
+#Accéder et se connecter à phpMyAdmin en rentrant dans la barre d'adresse du navigateur :
+localhost/phpmyadmin
+
+#Création d'une page PHP qui se connecte à la base de données test :
+cd /var/www/html
+sudo nano test.php
+
+#Ajouter dans le fichier précédemment créé le code PHP suivant :
+<?php
+//Connexion à la base de données en PDO :
+try
+{
+	$bdd = new PDO('mysql:host=localhost;dbname=test;charset=utf8',
+	'user','password');
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+
+$membres = $bdd->query('SELECT * FROM membres');
+?>
+
+
+	<?php while($membre = $membres->fetch()) { ?>
+	<?php echo $membre['id'] ?> : <?php echo $membre['pseudo'] ?>
+	<?php } ?>
+	
+#Visualisation de la table membres en rentrant dans la barre d'adresse du navigateur :
+localhost/test.php
+
+#Prioriser les fichiers PHP au fichier HTML grâce au fichier dir.conf :
+sudo nano /etc/apache2/mods-enabled/dir.conf
+
+#Placer dans le fichier précédent index.php en première position :
+<IfModule mod_dir.c>
+	DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+</IfModule>
+
+#Autoriser Apache à montrer les erreurs grâce au fichier php.ini :
+sudo nano /etc/php/7.4/apache2/php.ini
+
+#Dans le fichier précédent retirer les points-virgules et vérifier que :
+error_reporting = E_ALL
+display_errors = On

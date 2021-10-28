@@ -1,0 +1,254 @@
+#Pour installer les Additions Invités sur CentOS 7 sans interface graphique :
+
+	mount /dev/cdrom /media/
+	cd /media
+	./VBoxLinuxAdditions.run
+
+#Récupération du .z et .BIN dans le dossier partagé vers la VM :
+
+	Dans le terminal :
+
+	su - root
+	cd /media/sf_Images
+	cp DROST.9.0.00_Linux-x86_64.z /soft/em/DROST.9.0.00_Linux-x86_64.z
+	cp PANFT.9.0.00.500_Linux-x86_64_INSTALL.BIN /soft/em/PANFT.9.0.00.500_Linux-x86_64_INSTALL.BIN
+	
+	cd /soft/em
+	chmod a+x DROST.9.0.00_Linux-x86_64.z
+	chown ctmem:ctmem DROST.9.0.00_Linux-x86_64.z
+	chmod a+x PANFT.9.0.00.500_Linux-x86_64_INSTALL.BIN
+	chown ctmem:ctmem PANFT.9.0.00.500_Linux-x86_64_INSTALL.BIN
+	exit
+
+#Lancement de l'installation de Control-M Enterprise Manager version 9.0.00.000 :
+
+	Dans le terminal :
+	
+	su - ctmem
+	cd /soft/em
+	gunzip DROST.9.0.00_Linux-x86_64.z
+	tar -xvf DROST.9.0.00_Linux-x86_64
+	./setup.sh
+	rm DROST.9.0.00_Linux-x86_64
+	exit
+
+#Récupération de l'ip de la VM :
+
+	Dans le terminal :
+	
+	su - root
+	ip addr => (192.168.1.40)
+	exit
+
+#Vérification de l'installation du Control-M Enterprise Manager :
+
+	Dans le terminal :
+	
+	su - ctmem
+	root_menu
+	1 (Activation Menu)
+	1 (Check All)
+	q
+	q
+
+	ps -aux | grep ctm
+	ps -aux | grep controlm
+	exit
+
+#Ouvrir les ports 18080 et 13075 sur Control-M Entreprise Manager :
+	
+	Dans le terminal :
+	
+	su - root
+	sudo firewall-cmd --zone=public --permanent --add-port=18080/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=13075/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=8446/tcp
+	sudo firewall-cmd --reload
+	netstat -na | grep 18080
+	netstat -na | grep 13075
+	netstat -na | grep 8446
+	exit
+
+#Installation du patch 9.0.00.500 pour Control-M Entreprise Manager :
+
+	Dans le terminal :
+
+	su - root
+	yum -y install ksh
+	exit	
+
+	su - ctmem
+	root_menu
+	1 (Activation Menu)
+	10 (Stop CONTROL-M/EM Configuration Agent)
+	11 (Stop CONTROL-M Configuration Server)
+	9 (Stop CORBA Naming Service)
+	1 (Check All)
+	q
+	q
+
+	cd /soft/em/bin
+	stop_web_server
+
+	/soft/em/PANFT.9.0.00.500_Linux-x86_64_INSTALL.BIN
+	exit
+
+#Migration de la version Control-M 9.0.00.500 vers 9.0.20 :
+
+	Dans le terminal :
+
+	su - ctmem
+	cd /soft/em
+	rm PANFT.9.0.00.500_Linux-x86_64_INSTALL.BIN
+	mkdir em9_0_20
+	cp DROST.9.0.20.000_Linux-x86_64.tar.Z /soft/em/em9_0_20/DROST.9.0.20.000_Linux-x86_64.tar.Z
+	rm DROST.9.0.20.000_Linux-x86_64.tar.Z
+	
+	cd /soft/em/em9_0_20/
+	gunzip DROST.9.0.20.000_Linux-x86_64.tar.Z
+	tar -xvf DROST.9.0.20.000_Linux-x86_64.tar
+	./setup.sh
+
+	root_menu
+	1 (Activation Menu)
+	2 (Start All)
+	1 (Check All)
+	q
+	q
+	exit
+
+#Installation du client Control-M sur Windows :
+	
+	Installation framework à une version minimale 4.5.2
+
+	Installer le client Control-M sur Windows avec le fichier DROST.9.0.20.000_windows en lançant le setup
+
+	Hostname : ip de la machine
+	Port : 18080
+
+	Créer une nouvelle règle sortante dans la pare-feu Windows pour autoriser le flux sur les port 18080 et 13075
+	
+	L'utilisateur est emuser et le mot de passe celui définit lors de l'installation
+
+	telnet ip port dans le cmd pour vérifier la bonne communication
+
+#Pour installer les Additions Invités sur CentOS 7 sans interface graphique :
+
+	mount /dev/cdrom /media/
+	cd /media
+	./VBoxLinuxAdditions.run
+
+#Récupération du .z et .BIN dans le dossier partagé vers la VM :
+
+	Dans le terminal :
+
+	su - root
+	cd /media/sf_Images
+	cp DROST.9.0.00_Linux-x86_64.z /soft/controlm/DROST.9.0.00_Linux-x86_64.z
+	cp PACTV.9.0.00.400_Linux-x86_64_INSTALL.BIN /soft/controlm/PACTV.9.0.00.400_Linux-x86_64_INSTALL.BIN
+	
+	cd /soft/controlm
+	chmod a+x DROST.9.0.00_Linux-x86_64.z
+	chown controlm:controlm DROST.9.0.00_Linux-x86_64.z
+	chmod a+x PACTV.9.0.00.400_Linux-x86_64_INSTALL.BIN
+	chown controlm:controlm PACTV.9.0.00.400_Linux-x86_64_INSTALL.BIN
+	exit
+
+#Lancement de l'installation de Control-M Server version 9.0.00.000 :
+
+	Dans le terminal :
+	
+	su - controlm
+	cd /soft/controlm
+	gunzip DROST.9.0.00_Linux-x86_64.z
+	tar -xvf DROST.9.0.00_Linux-x86_64
+	./setup.sh
+	rm DROST.9.0.00_Linux-x86_64
+	exit
+
+#Récupération de l'ip de la VM :
+
+	Dans le terminal :
+	
+	su - root
+	ip addr => (192.168.1.39)
+	exit
+
+#Vérification de l'installation du Control-M Server :
+
+	Dans le terminal :
+	
+	su - controlm
+	ctm_menu
+	1 (CONTROL-M Manager)
+	1 (Check All)
+	q
+	q
+
+	ps -aux | grep ctm
+	ps -aux | grep controlm
+	exit
+
+#Ouvrir les ports 2368, 2369, 2370, 2371, 7005 et 7006 sur Control-M Entreprise Manager/Server :
+
+	Dans le terminal :
+
+	su - root
+	sudo firewall-cmd --zone=public --permanent --add-port=2368/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=2369/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=2370/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=2371/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=7005/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=7006/tcp
+	sudo firewall-cmd --reload
+	netstat -na | grep 2368
+	netstat -na | grep 2369
+	netstat -na | grep 2370
+	netstat -na | grep 2371
+	netstat -na | grep 7005
+	netstat -na | grep 7006
+	exit
+
+#Installation du patch 9.0.00.400 pour Control-M Server :
+
+	Dans le terminal :
+	
+	su - root
+	yum -y install psmisc
+	exit
+
+	su - controlm
+	ctm_menu
+	1 (CONTROL-M Manager)
+	9 (Stop Control-M/Server Configuration Agent)
+	8 (Stop Control-M/Server)
+	1 (Check All)
+	q
+	q
+
+	/soft/controlm/PACTV.9.0.00.400_Linux-x86_64_INSTALL.BIN
+	exit
+
+#Migration de la version Control-M 9.0.00.400 vers 9.0.20 :
+
+	Dans le terminal :
+
+	su - controlm
+	cd /soft/controlm
+	rm PACTV.9.0.00.400_Linux-x86_64_INSTALL.BIN
+	mkdir controlm9_0_20
+	cp DROST.9.0.20.000_Linux-x86_64.tar.Z /soft/controlm/controlm9_0_20/DROST.9.0.20.000_Linux-x86_64.tar.Z
+	rm DROST.9.0.20.000_Linux-x86_64.tar.Z
+	
+	cd /soft/controlm/controlm9_0_20/
+	gunzip DROST.9.0.20.000_Linux-x86_64.tar.Z
+	tar -xvf DROST.9.0.20.000_Linux-x86_64.tar
+	./setup.sh
+
+	ctm_menu
+	1 (CONTROL-M Manager)
+	2 (Start All)
+	1 (Check All)
+	q
+	q
+	exit

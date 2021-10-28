@@ -1,0 +1,240 @@
+/* Concepteur : Josselin Fatah-Roux */
+/* Site internet : ovnie.com */
+
+/* Encodage */
+@charset "utf-8";
+
+/* Gestion du body */
+body{
+	color: #ffffff;
+	font-size: 16px;
+	font-family: "Times New Roman", sans-serif;
+	margin: 0;
+	background-color: #000000;
+}
+
+/* Gestion des liens */
+a:link{
+	color: #CCCCCC;
+	text-decoration: none; 
+}
+
+a:visited, a:hover, a:active{
+	color: gray;
+	text-decoration: none; 
+}
+
+nav a:link, nav a:visited, nav a:hover, nav a:active{
+	color: #ffffff;
+	text-decoration: none;
+}
+
+/* Gestion de la connexion */
+.connect{
+	width: 80%;
+}
+
+/* Gestion de l'alignement du texte */
+.textJustify{
+	text-align: justify;
+}
+
+.textCenter{
+	text-align: center;
+}
+
+.textRight{
+	text-align: right;
+}
+
+.textLeft{
+	text-align: left;
+}
+
+.textAlinea{
+	text-indent: 2em;
+}
+
+/* Gestion des couleurs : erreur et valide */
+.erreur{
+	color: red;
+}
+
+.valide{
+	color: green;
+}
+
+/* Gestion des titres */
+h1{
+	font-size: 24px;
+}
+
+h2{
+	font-size: 18px;
+}
+
+/* Gestion tableau page profil.php */
+table{
+	margin: auto;
+}
+
+td{
+	text-align: left;
+}
+
+/* Gestion des paragraphes */
+.topSite{
+	margin: auto;
+	background-color: #131112;
+}
+
+/* Gestion du header */
+header{
+	height: 50px;
+	margin: 0px 0px 30px 0px; 
+	border: solid; 
+	border-color: #CCCCCC; 
+	border-width: 0px 0px 2px 0px;
+	background-color: #131112;
+	display: flex;
+	justify-content: flex-start;
+}
+
+/* Gestion de la bannière */
+.banner{
+	width: 900px;
+	height: 200px;
+	text-align: center;
+	margin-right: auto;
+	margin-left: auto;
+    margin-top: 15px;
+    margin-bottom: 11px;
+	border: 2px solid #CCCCCC;
+	border-radius: 5px;
+	background-color: #131112;
+}
+
+/* Gestion des sections */
+section{
+	width: 904px;
+	margin: auto;
+	display: flex;
+}
+
+.logo, .browser, .research{
+	background-color: #131112;
+}
+
+/* Gestion du nav */
+nav{
+	width: 150px;
+	text-align: left;
+	word-wrap: break-word;
+	padding: 10px;
+	margin-right: 11px;
+	border: 2px solid #CCCCCC;
+	border-radius: 5px;
+	background-color: #131112;
+}
+
+/* Gestion d'article */
+article{
+	width: 725px;
+	word-wrap: break-word;
+	padding: 10px;
+	border: 2px solid #CCCCCC;
+	border-radius: 5px;
+	background-color: #131112;
+}
+
+/* Gestion du développement */
+.news{
+    width: 500px;
+	color: black;
+    margin: auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.news h2{
+	font-size: 18px;
+	text-align: center;
+	margin-top: 7px;
+	margin-bottom: 0px;
+    background-color: grey;
+}
+
+.news p{
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 7px;
+    background-color: #CCCCCC;
+}
+
+/* Gestion du minichat */
+.minichat{
+    width: 500px;
+	text-align: center;
+    margin: auto;
+	margin-bottom: 15px;
+	padding: 5px;
+	display: flex;
+	flex-direction: column;
+	border: 2px solid white;
+	border-radius: 30px;
+}
+
+/* Gestion de la zone interdite */
+.secret{
+	width: 632px;
+	text-align: center;
+	padding: 10px;
+	margin: 10px auto;
+	background-color: #131112;
+	border: 2px solid #CCCCCC;
+	border-radius: 5px;
+}
+
+.bloc{
+	display: block;
+	margin: auto;
+}
+
+/* Gestion du footer */
+footer{
+	height: 40px;
+	text-align: center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin: 30px 0px 0px 0px; 
+	border: solid; 
+	border-color: #CCCCCC; 
+	border-width: 2px 0px 0px 0px;
+	background-color: #131112;
+}
+
+@media all and (max-width: 1024px)
+{
+	header
+	{
+		display: none;
+	}
+	
+	footer
+    {
+        height: 40px;
+		width: 900px;
+		text-align: center;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin-right: auto;
+		margin-left: auto;
+		margin-top: 11px;
+		margin-bottom: 15px;
+		border: solid; 
+		border-color: #CCCCCC; 
+		border-width: 2px 2px 2px 2px;
+		border-radius: 5px;
+		background-color: #131112;
+    }
+}
