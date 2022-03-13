@@ -13,7 +13,7 @@ session_start();
 		<meta name="author" content="Josselin Fatah-Roux" />
 		<meta name="keywords" content="partage,entraide,découverte,actualités,sciences,informatique,horreur,humour" />
 		<meta name="description" content="Chaque fois que l’un d’eux serait détaché, et serait contraint de se lever immédiatement, de retourner la tête, de marcher, et de regarder la lumière, à chacun de ces gestes il souffrirait, et l’éblouissement le rendrait incapable de distinguer les choses dont tout à l’heure il voyait les ombres. [La République (trad. Chambry)/Livre VII]" />
-		<title>Ovnie - Recherche | Projet 7.20.12.0.13</title>
+		<title>Ovnie - Liens associations | Projet 7.20.12.0.13</title>
 	</head>
 	
 	<body>
@@ -29,43 +29,14 @@ session_start();
 				<?php require("./menu.php"); ?>
 			</nav>
 			<article>
-				<h1><strong>Recherche</strong></h1>
-				<?php 
-					if(isset($_GET['q']) AND !empty($_GET['q']))
-					{
-						//var_dump($_GET['q']);
-						$q = htmlspecialchars($_GET['q']);
-						$recherche = $bdd->query('SELECT id, titre FROM articles WHERE titre LIKE "%'.$q.'%" ORDER BY id DESC');
-					}
-					else
-					{
-						echo '<p class="textCenter"><span class="erreur">Erreur, aucune recherche n\'est indiquée ! Veuillez contacter l\'administrateur du site.</span></p>';
-					}
-				?>
-				<?php
-					if(isset($recherche))
-					{
-						if($recherche->rowCount() > 0) 
-						{
-				?>
-				<ul>
-				<?php 
-							while($enumeration = $recherche->fetch()) 
-							{
-				?>
-					<li><a href="./articles.php?redaction=<?php echo $enumeration['id']; ?>"><?= $enumeration['titre'] ?></a></li>
-				<?php
-							} 
-				?>
-				</ul>
-				<?php
-						} 
-						else
-						{
-							echo '<p class="textCenter"><span class="erreur">Aucun résultat pour : '.$q.' ...</span></p>';
-						}
-					}
-				?>
+				<h1><strong>Fondation Le Refuge : Protéger les jeunes LGBT+</strong></h1>
+				<p class="textCenter"><img src="./images/refuge.png" alt="Image" /></p>
+				<p class="textJustify">Reconnue d’Utilité Publique, la Fondation Le Refuge a pour objet de prévenir l’isolement et le suicide des jeunes LGBT+, de 14 à 25 ans, victimes d’homophobie ou de transphobie et en situation de rupture familiale.</p>
+				<p>Lien : <a href="https://le-refuge.org/" title="Fondation Le Refuge" >Fondation Le Refuge</a></p>
+				<h1><strong>Fondation Thierry Latran : Dédiée à la maladie de Charcot</strong></h1>
+				<p class="textCenter"><img src="./images/thierry_latran.png" alt="Image" /></p>
+				<p class="textJustify">La Fondation, créée en juin 2008, est dédiée au financement de la recherche au niveau Européen sur La Sclérose Latérale Amyotrophique ou Maladie de Charcot, maladie atteignant le motoneurone, qui paralyse peu à peu tous les muscles du corps et enferme sa victime dans une prison lui laissant une espérance de survie de 3 à 5 ans.</p>
+				<p>Lien : <a href="http://www.fondation-thierry-latran.org/" title="Fondation Thierry Latran" >Fondation Thierry Latran</a></p>
 			</article>
 		</section>
 		<footer>

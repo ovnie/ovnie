@@ -15,7 +15,7 @@ session_start();
 	</head>
 	
 	<body>
-		<?php require("base.php"); ?>
+		<?php require("./base.php"); ?>
 		
 		<?php
 		if(isset($_POST['activermodification']))

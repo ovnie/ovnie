@@ -11,7 +11,7 @@
 	</head>
 	
 	<body>
-		<?php require("base.php"); ?>
+		<?php require("./base.php"); ?>
 		
 		<?php
 		if(isset($_GET['type']) AND $_GET['type'] == 'membre') 
@@ -30,7 +30,7 @@
 		<ul>
 			<?php while($membre = $membres->fetch()) { 
 			//var_dump($membre) ?>
-			<li><?php echo $membre['id'] ?> : <?php echo $membre['pseudo'] ?> - <a href="membres.php?type=membre&supprime=<?php echo $membre['id'] ?>">Supprimer</a></li>
+			<li><?php echo $membre['id'] ?> : <?php echo $membre['pseudo'] ?> - <a href="./membres.php?type=membre&supprime=<?php echo $membre['id'] ?>">Supprimer</a></li>
 			<?php } ?>
 		</ul>
 	</body>

@@ -17,16 +17,16 @@ session_start();
 	</head>
 	
 	<body>
-		<?php require("admin/base.php"); ?>
+		<?php require("./admin/base.php"); ?>
 		<header>
-			<?php require("header.php"); ?>
+			<?php require("./header.php"); ?>
 		</header>
 		<section class="banner">
-			<?php require("banner.php"); ?>
+			<?php require("./banner.php"); ?>
 		</section>
 		<section>
 			<nav>
-				<?php require("menu.php"); ?>
+				<?php require("./menu.php"); ?>
 			</nav>
 			<article>
 				<h1><strong>Mini-chat</strong></h1>
@@ -134,7 +134,7 @@ session_start();
 			</article>
 		</section>
 		<footer>
-			<?php require("footer.php"); ?>
+			<?php require("./footer.php"); ?>
 		</footer>
 	</body>
 	

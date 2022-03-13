@@ -16,21 +16,21 @@ session_start();
 	</head>
 	
 	<body>
-		<?php require("admin/base.php"); ?>
+		<?php require("./admin/base.php"); ?>
 		<header>
-			<?php require("header.php"); ?>
+			<?php require("./header.php"); ?>
 		</header>
 		<section class="banner">
-			<?php require("banner.php"); ?>
+			<?php require("./banner.php"); ?>
 		</section>
 		<section>
 			<nav>
-				<?php require("menu.php"); ?>
+				<?php require("./menu.php"); ?>
 			</nav>
 			<article>
 				<?php
 				if(isset($_SESSION['id']) AND isset($_SESSION['pseudo']) AND isset($_SESSION['mail'])){
-					header("Location: profil.php");
+					header("Location: ./profil.php");
 				}
 				else{
 					?>
@@ -150,7 +150,7 @@ session_start();
 			</article>
 		</section>
 		<footer>
-			<?php require("footer.php"); ?>
+			<?php require("./footer.php"); ?>
 		</footer>
 	</body>
 	

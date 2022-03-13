@@ -25,7 +25,7 @@
 		}
 		?>
 		<h1>Ajouter un article :</h1>
-		<form method="post" action="generate.php">
+		<form method="post" action="./generate.php">
 			<fieldset>
 				<legend>Informations</legend>
 					<label for="titre">Quel est le titre ?</label>
@@ -40,7 +40,7 @@
 		</form>
 		
 		<h1>Modifier un article :</h1>
-		<form method="post" action="modificate.php">
+		<form method="post" action="./modificate.php">
 			<label for="ticket">Quel est le numéro de ticket ?</label>
 			<br/><input type="text" name="ticket" id="ticket" />
 			<p><input type="submit" value="Envoyer" name='lancermodification' /></p>

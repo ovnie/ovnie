@@ -1,4 +1,4 @@
-<?php require("admin/base.php"); ?>
+<?php require("./admin/base.php"); ?>
 
 <?php
 $messagesParPage=15; //Nous allons afficher 15 messages par page.
@@ -52,7 +52,7 @@ for($i=1; $i<=$nombreDePages; $i++) //On fait notre boucle.
 	}	
 	else //Sinon...
 	{
-	  echo ' <a href="minichat.php?page='.$i.'">'.$i.'</a> ';
+	  echo ' <a href="./minichat.php?page='.$i.'">'.$i.'</a> ';
 	}
 }
 echo '</p>';

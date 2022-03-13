@@ -11,7 +11,7 @@
 	</head>
 	
 	<body>
-		<?php require("base.php"); ?>
+		<?php require("./base.php"); ?>
 	
 		<?php
 		if(isset($_POST['ajouterscategorie']))
@@ -36,27 +36,27 @@
 
 					$continuer = 1;
 					//Redirection du visiteur vers la page formulaire :
-					header('Location: layout.php?reussite='.$continuer);
+					header('Location: ./layout.php?reussite='.$continuer);
 				}
 				else
 				{
 					$continuer = 2;
 					//Redirection du visiteur vers la page formulaire :
-					header('Location: layout.php?reussite='.$continuer);
+					header('Location: ./layout.php?reussite='.$continuer);
 				}
 			}
 			else
 			{
 				$continuer = 2;
 				//Redirection du visiteur vers la page formulaire :
-				header('Location: layout.php?reussite='.$continuer);
+				header('Location: ./layout.php?reussite='.$continuer);
 			}
 		}
 		else
 		{
 			$continuer = 2;
 			//Redirection du visiteur vers la page formulaire :
-			header('Location: layout.php?reussite='.$continuer);
+			header('Location: ./layout.php?reussite='.$continuer);
 		}
 		?>
 	</body>

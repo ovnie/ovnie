@@ -11,7 +11,7 @@
 	</head>
 	
 	<body>
-		<?php require("base.php"); ?>
+		<?php require("./base.php"); ?>
 	
 		<?php
 		if(isset($_POST['ajouterarticle']))
@@ -37,20 +37,20 @@
 				$req1 = $bdd->prepare('INSERT INTO actu(date_actu) VALUES(NOW())');
 				$continuer = 1;
 				//Redirection du visiteur vers la page formulaire :
-				header('Location: message.php?reussite='.$continuer);
+				header('Location: ./message.php?reussite='.$continuer);
 			}
 			else
 			{
 				$continuer = 2;
 				//Redirection du visiteur vers la page formulaire :
-				header('Location: message.php?reussite='.$continuer);
+				header('Location: ./message.php?reussite='.$continuer);
 			}
 		}
 		else
 		{
 			$continuer = 2;
 			//Redirection du visiteur vers la page formulaire :
-			header('Location: message.php?reussite='.$continuer);
+			header('Location: ./message.php?reussite='.$continuer);
 		}
 		?>
 	</body>

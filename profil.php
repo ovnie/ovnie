@@ -16,16 +16,16 @@ session_start();
 	</head>
 	
 	<body>
-		<?php require("admin/base.php"); ?>
+		<?php require("./admin/base.php"); ?>
 		<header>
-			<?php require("header.php"); ?>
+			<?php require("./header.php"); ?>
 		</header>
 		<section class="banner">
-			<?php require("banner.php"); ?>
+			<?php require("./banner.php"); ?>
 		</section>
 		<section>
 			<nav>
-				<?php require("menu.php"); ?>
+				<?php require("./menu.php"); ?>
 			</nav>
 			<article>
 			<?php 
@@ -109,13 +109,13 @@ session_start();
 			<?php 
 			}
 			else{
-				header("Location: index.php");
+				header("Location: ./index.php");
 			}
 			?>
 			</article>
 		</section>
 		<footer>
-			<?php require("footer.php"); ?>
+			<?php require("./footer.php"); ?>
 		</footer>
 	</body>
 	

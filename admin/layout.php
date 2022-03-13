@@ -11,7 +11,7 @@
 	</head>
 	
 	<body>
-		<?php require("base.php"); ?>
+		<?php require("./base.php"); ?>
 	
 		<?php 
 		if(isset($_GET['reussite']))
@@ -60,14 +60,14 @@
 		</ul>
 		
 		<h1>Ajouter une catégorie :</h1>
-		<form method="post" action="parent.php">
+		<form method="post" action="./parent.php">
 			<label for="categorie">Quel est le titre ?</label>
 			<br/><input type="text" name="categorie" id="categorie" />
 			<p><input type="submit" value="Envoyer" name='ajoutercategorie' /></p>
 		</form>
 		
 		<h1>Ajouter une sous-catégorie :</h1>
-		<form method="post" action="create.php">
+		<form method="post" action="./create.php">
 			<fieldset>
 				<legend>Informations</legend>
 					<label for="scategorie">Quel est le titre ?</label>
@@ -82,7 +82,7 @@
 		</form>
 		
 		<h1>Ajouter une rédaction :</h1>
-		<form method="post" action="redaction.php">
+		<form method="post" action="./redaction.php">
 			<fieldset>
 				<legend>Informations</legend>
 					<label for="rtitre">Quel est le titre ?</label>

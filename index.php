@@ -16,20 +16,20 @@ session_start();
 	</head>
 	
 	<body>
-		<?php require("admin/base.php"); ?>
+		<?php require("./admin/base.php"); ?>
 		<header>
-			<?php require("header.php"); ?>
+			<?php require("./header.php"); ?>
 		</header>
 		<section class="banner">
-			<?php require("banner.php"); ?>
+			<?php require("./banner.php"); ?>
 		</section>
 		<section>
 			<nav>
-				<?php require("menu.php"); ?>
+				<?php require("./menu.php"); ?>
 			</nav>
 			<article>
 				<h1><strong>Projet 7.20.12.0.13</strong></h1>
-				<p class="textCenter"><img src="images/project.png" alt="Image" /></p>
+				<p class="textCenter"><img src="./images/project.png" alt="Image" /></p>
 				<h1><strong>État du développement</strong></h1>
 				<?php
 				//On récupère les 5 dernières actualités :
@@ -62,7 +62,7 @@ session_start();
 			</article>
 		</section>
 		<footer>
-			<?php require("footer.php"); ?>
+			<?php require("./footer.php"); ?>
 		</footer>
 	</body>
 	

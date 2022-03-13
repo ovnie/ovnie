@@ -16,16 +16,16 @@ session_start();
 	</head>
 	
 	<body>
-		<?php require("admin/base.php"); ?>
+		<?php require("./admin/base.php"); ?>
 		<header>
-			<?php require("header.php"); ?>
+			<?php require("./header.php"); ?>
 		</header>
 		<section class="banner">
-			<?php require("banner.php"); ?>
+			<?php require("./banner.php"); ?>
 		</section>
 		<section>
 			<nav>
-				<?php require("menu.php"); ?>
+				<?php require("./menu.php"); ?>
 			</nav>
 			<article>
 				<?php 
@@ -52,7 +52,7 @@ session_start();
 							while ($recup_articles = $req_articles->fetch())
 							{
 				?>
-							<li><a href="https://ovnie.com/articles.php?redaction=<?php echo $recup_articles['id']; ?>"><?php echo htmlspecialchars($recup_articles['titre']); ?></a></li>
+							<li><a href="./articles.php?redaction=<?php echo $recup_articles['id']; ?>"><?php echo htmlspecialchars($recup_articles['titre']); ?></a></li>
 				<?php
 							}//Fin de la boucle des articles :
 							$req_articles->closeCursor();
@@ -75,7 +75,7 @@ session_start();
 			</article>
 		</section>
 		<footer>
-			<?php require("footer.php"); ?>
+			<?php require("./footer.php"); ?>
 		</footer>
 	</body>
 	
