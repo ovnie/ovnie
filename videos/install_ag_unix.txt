@@ -1,0 +1,41 @@
+yum -y install telnet
+yum -y install net-tools
+yum -y install psmisc
+
+cd /media/sf_Images/
+cp DRKAI.9.0.20.200_Linux-x86_64.z /aglinux/DRKAI.9.0.20.200_Linux-x86_64.z
+
+/usr/sbin/useradd -u 1002 -d /aglinux -s /bin/bash ecs
+passwd ecs
+usermod -aG wheel ecs
+groups ecs
+
+cat /etc/passwd
+--------------
+ecs:x:1002:1002::/aglinux:/bin/bash
+--------------
+
+cd /
+chown ecs:ecs /aglinux
+
+cd /aglinux
+gunzip DRKAI.9.0.20.200_Linux-x86_64.z
+tar -xvf DRKAI.9.0.20.200_Linux-x86_64
+/aglinux/setup.sh
+
+/aglinux/ctm/scripts/shut-ag -u ecs -p ALL
+/aglinux/ctm/scripts/start-ag -u ecs -p ALL
+
+cp /aglinux/ctm/scripts/rc.agent_user  /etc/init.d/
+cd /etc/init.d/
+chmod +x rc.agent_user
+ln -s rc.agent_user ecs-agent
+service ecs-agent stop
+ps aux | grep controlm
+service ecs-agent start
+ps aux | grep controlm
+su - ecs
+ag_diag_comm
+
+/bin/sudo -u <user_account> /bin/csh -c "start_server; start_config_agent"
+/bin/sh -c [server_home_dir]/ctm_server/data/rc.<account name>

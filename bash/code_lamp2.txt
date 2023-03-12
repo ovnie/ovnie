@@ -1,0 +1,148 @@
+#Mise à jour des paquets déjà installés avec le nouveau gestionnaire de packages dnf ou l'ancien yum :
+sudo dnf update
+sudo yum update
+
+#Installation d'Apache avec le nouveau gestionnaire de packages dnf ou l'ancien yum :
+sudo dnf install httpd
+sudo yum install httpd
+
+#Démarrage d'Apache :
+sudo systemctl start httpd
+sudo systemctl enable httpd
+sudo systemctl status httpd
+
+#Autoriser le trafic sur le port 80 pour le pare-feu :
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --permanent --list-all
+sudo firewall-cmd --reload
+
+#Vérification de l'installation d'Apache en rentrant dans la barre d'adresse du navigateur :
+localhost
+
+#Installation de MariaDB avec le nouveau gestionnaire de packages dnf ou l'ancien yum :
+sudo dnf install mariadb-server
+sudo yum install mariadb-server
+
+#Démarrage de MariaDB :
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+sudo systemctl status mariadb
+
+#Exécution d'un script qui va sécuriser MariaDB :
+sudo mysql_secure_installation
+#1) Aucun mot de passe n'a été définit pour l'utilisateur root de MariaDB (donc ne pas insèrer de mot de passe - laisser vide).
+#2) Ensuite ne pas définir de mot de passe pour l'utilisateur root de MariaDB car MariaDB utilise une méthode d'authentification spéciale pour l'utilisateur root, qui est généralement plus sûre que l'utilisation d'un mot de passe - laisser vide.
+#3) Valider le reste avec Y cela supprimera les utilisateurs anonymes, la base de données de test et désactivera la connexion root à distance.
+
+#L'authentification par défaut pour l'utilisateur root de MariaDB est unix_socket au lieu de password :
+sudo mysql
+show databases;
+exit;
+
+#Création d'une base test avec la table membres contenant les champs id et pseudo :
+sudo mysql
+CREATE DATABASE test CHARACTER SET 'utf8';
+CREATE TABLE test.membres
+(
+    id INT PRIMARY KEY NOT NULL,
+    pseudo VARCHAR(250)
+);
+INSERT INTO test.membres VALUES ('1','carmen');
+show databases;
+exit;
+
+#Installation de PHP (langage de programmation) avec son module pour communiquer avec MariaDB à partir du nouveau gestionnaire de packages dnf ou l'ancien yum :
+sudo dnf install php php-pdo php-pecl-zip php-json php-mbstring php-mysqlnd
+sudo yum install php php-pdo php-pecl-zip php-json php-mbstring php-mysqlnd
+
+#Redémarrer Apache :
+sudo systemctl restart httpd
+
+#Création de la page info.php détaillant toutes les spécificités de notre environnement PHP :
+cd /var/www/html
+sudo nano info.php
+
+#Ajouter dans le fichier précédemment créé le code PHP suivant :
+<?php
+phpinfo();
+?>
+
+#Visualisation du fichier info.php en rentrant dans la barre d'adresse du navigateur :
+localhost/info.php
+
+#Installation de phpMyAdmin :
+sudo wget https://files.phpmyadmin.net/phpMyAdmin/5.0.1/phpMyAdmin-5.0.1-all-languages.zip
+sudo unzip phpMyAdmin-5.0.1-all-languages.zip
+sudo mv phpMyAdmin-5.0.1-all-languages /usr/share/phpmyadmin
+
+#Création d'un répertoire tmp :
+sudo mkdir /usr/share/phpmyadmin/tmp
+sudo chown -R apache:apache /usr/share/phpmyadmin
+sudo chmod 777 /usr/share/phpmyadmin/tmp
+
+#Ajouter phpMyAdmin à Apache grâce au fichier phpmyadmin.conf :
+sudo nano /etc/httpd/conf.d/phpmyadmin.conf
+
+#Ajouter au fichier phpmyadmin.conf :
+Alias /phpmyadmin /usr/share/phpmyadmin
+ 
+<Directory /usr/share/phpmyadmin/>
+   AddDefaultCharset UTF-8
+   <IfModule mod_authz_core.c>
+     # Apache 2.4
+     <RequireAny>
+      Require all granted
+     </RequireAny>
+   </IfModule>
+</Directory>
+ 
+<Directory /usr/share/phpmyadmin/setup/>
+   <IfModule mod_authz_core.c>
+ # Apache 2.4
+     <RequireAny>
+       Require all granted
+     </RequireAny>
+   </IfModule>
+</Directory>
+
+#Redémarrer Apache :
+sudo systemctl restart httpd
+
+#L'authentification de l'utilisateur root de MariaDB au moyen d'unix_socket ne permet pas de se connecter avec phpMyAdmin. Il nous faut donc pour cela créer un utilisateur super-administrateur ayant les pleins pouvoirs dans MariaDB :
+sudo mysql
+CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'my_password';
+GRANT ALL PRIVILEGES ON * . * TO 'my_user'@'localhost';
+FLUSH PRIVILEGES;
+QUIT;
+
+#Accéder et se connecter à phpMyAdmin en rentrant dans la barre d'adresse du navigateur :
+localhost/phpmyadmin
+
+#Création d'une page PHP qui se connecte à la base de données test :
+cd /var/www/html
+sudo nano test.php
+
+#Ajouter dans le fichier précédemment créé le code PHP suivant :
+<?php
+//Connexion à la base de données en PDO :
+try
+{
+	$bdd = new PDO('mysql:host=localhost;dbname=test;charset=utf8',
+	'user','password');
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+
+$membres = $bdd->query('SELECT * FROM membres');
+?>
+
+
+	<?php while($membre = $membres->fetch()) { ?>
+	<?php echo $membre['id'] ?> : <?php echo $membre['pseudo'] ?>
+	<?php } ?>
+	
+#Visualisation de la table membres en rentrant dans la barre d'adresse du navigateur :
+localhost/test.php

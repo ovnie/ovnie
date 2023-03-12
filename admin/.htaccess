@@ -1,0 +1,7 @@
+AuthUserFile /var/www/sites/ovnie/public_html/.htpasswd
+
+AuthName "Accès protégé"
+
+AuthType Basic
+
+Require valid-user

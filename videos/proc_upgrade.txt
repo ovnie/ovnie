@@ -1,0 +1,127 @@
+#Upgrade du Control-M Enterprise Manager de la version 9.0.20.200 vers la version 9.0.21.000 :
+
+su - root
+rm -rf /soft/em/upgrade_ctmem/
+mkdir -p /soft/em/upgrade_ctmem/
+chown ctmem:ctmem /soft/em/upgrade_ctmem/
+cd /media/sf_Images/
+cp DROST.9.0.21.000_Linux-x86_64.z /soft/em/upgrade_ctmem/DROST.9.0.21.000_Linux-x86_64.z
+cd /soft/em/upgrade_ctmem/
+chmod a+x DROST.9.0.21.000_Linux-x86_64.z
+chown ctmem:ctmem DROST.9.0.21.000_Linux-x86_64.z
+gunzip DROST.9.0.21.000_Linux-x86_64.z
+tar -xvf DROST.9.0.21.000_Linux-x86_64
+rm DROST.9.0.21.000_Linux-x86_64
+
+yum -y install java-11-openjdk
+sh -c "java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'"
+exit
+
+su - ctmem
+setenv BMC_INST_JAVA_HOME /usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+vi ~/.cshrc
+----------------------------------------------------------------------------------
+setenv BMC_INST_JAVA_HOME /usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+----------------------------------------------------------------------------------
+
+cd /soft/em/
+/soft/em/upgrade_ctmem/setup.sh
+exit
+
+#Upgrade de l'agent Control-M de la version 9.0.20.200 vers la version 9.0.21.000 :
+
+su - root
+rm -rf /soft/em/upgrade_ctmem/
+mkdir -p /soft/em/upgrade_agent/
+cd /media/sf_Images/
+cp DRFZ4.9.0.21.000_Linux-x86_64.z /soft/em/upgrade_agent/DRFZ4.9.0.21.000_Linux-x86_64.z
+cd /soft/em/upgrade_agent/
+chmod a+x DRFZ4.9.0.21.000_Linux-x86_64.z
+chown root:root DRFZ4.9.0.21.000_Linux-x86_64.z
+gunzip DRFZ4.9.0.21.000_Linux-x86_64.z
+tar -xvf DRFZ4.9.0.21.000_Linux-x86_64
+rm DRFZ4.9.0.21.000_Linux-x86_64
+
+yum -y install java-11-openjdk
+sh -c "java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'"
+export BMC_INST_JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+vi ~/.bashrc
+----------------------------------------------------------------------------------
+export BMC_INST_JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+----------------------------------------------------------------------------------
+
+cd /aglinux/
+export CONTROLM=/aglinux/ctm
+vi ~/.bashrc
+----------------------------------------------------------------------------------
+export CONTROLM=/aglinux/ctm
+----------------------------------------------------------------------------------
+/soft/em/upgrade_agent/setup.sh
+exit
+
+#Upgrade du Control-M Server de la version 9.0.20.200 vers la version 9.0.21.000 :
+
+su - root
+rm -rf /soft/controlm/upgrade_ctms/
+mkdir -p /soft/controlm/upgrade_ctms/
+chown controlm:controlm /soft/controlm/upgrade_ctms/
+cd /media/sf_Images/
+cp DROST.9.0.21.000_Linux-x86_64.z /soft/controlm/upgrade_ctms/DROST.9.0.21.000_Linux-x86_64.z
+cd /soft/controlm/upgrade_ctms/
+chmod a+x DROST.9.0.21.000_Linux-x86_64.z
+chown controlm:controlm DROST.9.0.21.000_Linux-x86_64.z
+gunzip DROST.9.0.21.000_Linux-x86_64.z
+tar -xvf DROST.9.0.21.000_Linux-x86_64
+rm DROST.9.0.21.000_Linux-x86_64
+
+yum -y install java-11-openjdk
+sh -c "java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'"
+exit
+
+su - controlm
+setenv BMC_INST_JAVA_HOME /usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+vi ~/.cshrc
+----------------------------------------------------------------------------------
+setenv BMC_INST_JAVA_HOME /usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+----------------------------------------------------------------------------------
+
+setenv BMC_INST_CTM_APIGTW_PORT 8393
+vi ~/.cshrc
+----------------------------------------------------------------------------------
+setenv BMC_INST_CTM_APIGTW_PORT 8393
+----------------------------------------------------------------------------------
+exit
+
+su - root
+sudo firewall-cmd --zone=public --permanent --add-port=8393/tcp
+sudo firewall-cmd --reload
+exit
+
+su - controlm
+cd /soft/controlm/
+/soft/controlm/upgrade_ctms/setup.sh
+exit
+
+#Upgrade du Configuration Agent de la version 9.0.20.200 vers la version 9.0.21.000 :
+
+su - root
+yum -y install java-11-openjdk
+sh -c "java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'"
+export BMC_INST_JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+vi ~/.bashrc
+----------------------------------------------------------------------------------
+export BMC_INST_JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+----------------------------------------------------------------------------------
+export CONTROLM=/soft/controlm/ctm_agent/ctm
+vi ~/.bashrc
+----------------------------------------------------------------------------------
+export CONTROLM=/soft/controlm/ctm_agent/ctm
+----------------------------------------------------------------------------------
+/soft/controlm/upgrade_ctms/setup.sh
+exit
+
+#Upgrade du Client Control-M de la version 9.0.20.200 vers la version 9.0.21.000 :
+
+microsoft-jdk-11.0.17-windows-x64.msi
+java -XshowSettings:properties -version 2>&1 > null | findstr "java.home"
+set BMC_INST_JAVA_HOME=C:\Program Files\Microsoft\jdk-11.0.17.8-hotspot

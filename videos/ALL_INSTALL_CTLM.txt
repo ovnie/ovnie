@@ -1,0 +1,444 @@
+#Configuration de la VM pour Control-M EM :
+
+	OS : CentOS 7
+	Espace : 65 Go (disque 1 : 20Go, disque 2 : 30Go, disque 3 : 10 Go, disque 4 : 5 Go)
+	RAM : 9000 Mo
+	Processeur : 2 CPU
+	Presse-papier partagé : Bidirectionnel
+	Glisser-Déposer : Bidirectionnel
+	Mode d'accès réseau : Accès par pont
+	Dossiers partagés : Activé (choisir son dossier avec les packages pour l'installation Control-M)
+
+#Installation de l'OS :
+	
+	Mettre le clavier à la bonne langue
+	Choisir le bon fuseau horaire
+	Choisir le bon espace de stockage (disque 1)
+	Activer la carte réseau
+	Créer un utilisateur admin autre que root (jfatahEM dans mon cas)
+
+#Mises à jour de l'OS et installation des Guest Additions for VirtualBox :
+
+	Dans le terminal :
+
+	su - root
+	yum -y update
+	yum -y install epel-release
+	yum -y install make gcc kernel-headers kernel-devel perl dkms bzip2
+	exit
+	reboot
+
+	=> Insérer l'image CD des Additions Invités et le lancer
+
+#Installation de GNOME pour l'installation de Control-M en GUI :
+
+	Dans le terminal :
+
+	su - root
+	dnf -y groupinstall workstation
+	systemctl set-default graphical.target
+	exit
+	reboot
+
+#Création du filesystem /soft/em via la gestion par volumes logiques :
+
+	Dans le terminal :
+
+	su - root
+	yum -y install lvm2
+
+	fdisk -l
+	lsblk -f
+
+	pvcreate /dev/sdb
+	pvcreate /dev/sdc
+	pvcreate /dev/sdd
+	pvdisplay
+
+	vgcreate datavg /dev/sdb /dev/sdc
+	vgextend datavg /dev/sdd
+	vgdisplay
+
+	lvcreate -n lvsoft -L 40G datavg
+	lvcreate -n lvagent -L 4G datavg
+	lvdisplay
+	mkfs.ext4 /dev/datavg/lvsoft
+	mkfs.ext4 /dev/datavg/lvagent
+
+	mkdir -p /soft/em
+	mkdir /aglinux
+	mount /dev/datavg/lvsoft /soft/em
+	mount /dev/datavg/lvagent /aglinux
+	lsblk -f
+
+	vi /etc/fstab
+	--------------
+	UUID=2e4b7451-3d81-4244-a301-18adaf9ed62a /soft/em                   ext4     defaults        0 0
+	UUID=ff537b21-d319-4f35-83da-a9cd378c42ab /aglinux                   ext4     defaults        0 0       0 0
+	--------------
+
+	df -h
+	exit
+
+#Création d'un utilisateur Control-M ctmem et paramétrage :
+	
+	Dans le terminal :
+	
+	su - root
+	yum -y install csh
+	
+	/usr/sbin/useradd -u 1001 -d /soft/em -s /bin/csh ctmem
+	passwd ctmem
+	usermod -aG wheel ctmem
+	groups ctmem
+
+	cat /etc/passwd
+	--------------
+	ctmem:x:1001:1001::/soft/em:/bin/csh
+	--------------
+
+	cd /soft
+	chown ctmem:ctmem em
+
+	vi /etc/sysctl.conf
+	--------------
+	kernel.shmall = 2097152
+	kernel.shmmax = 2147483648
+	kernel.shmmni = 800
+	kernel.sem = 250 32000 100 128
+	fs.file-max = 65536
+	net.ipv4.ip_local_port_range = 32768 61000
+	--------------
+	
+	/sbin/sysctl -p
+	dnf -y install libnsl
+
+	ulimit -Ha
+
+	exit
+
+#Récupération du package dans le dossier partagé vers la VM :
+
+	Dans le terminal :
+
+	su - root
+	cd /media/sf_[Nom_du_dossier_partagé]
+	cp DROST.9.0.20.000_Linux-x86_64.tar.Z /soft/em/DROST.9.0.20.000_Linux-x86_64.tar.Z
+        mkdir -p /soft/em/upgrade_ctmem/
+	cp DROST.9.0.20.200_Linux-x86_64.z /soft/em/upgrade_ctmem/DROST.9.0.20.200_Linux-x86_64.z
+        cd /soft/em
+	chmod a+x DROST.9.0.20.000_Linux-x86_64.tar.Z
+	chown ctmem:ctmem DROST.9.0.20.000_Linux-x86_64.tar.Z
+	cd /soft/em/upgrade_ctmem/
+	chmod a+x DROST.9.0.20.200_Linux-x86_64.z
+	chown ctmem:ctmem DROST.9.0.20.200_Linux-x86_64.z
+	exit
+
+#Sauvegarde de la VM avant installation de Control-M Enterprise Manager :
+
+	Eteindre la VM
+	Faire un snapshot
+
+#Lancement de l'installation de Control-M Enterprise Manager :
+
+	Dans le terminal :
+	
+	su - ctmem
+	cd /soft/em
+	uncompress/gunzip DROST.9.0.20.000_Linux-x86_64.tar.Z
+	tar -xvf DROST.9.0.20.000_Linux-x86_64.tar
+	./setup.sh
+	exit
+
+#Lancement de l'upgrade de Control-M Enterprise Manager :
+
+	Dans le terminal :
+	
+	su - ctmem
+	cd /soft/em/upgrade_ctmem/
+	uncompress/gunzip DROST.9.0.20.200_Linux-x86_64.z
+	tar -xvf DROST.9.0.20.200_Linux-x86_64.z
+	cd /soft/em/
+	/soft/em/upgrade_ctmem/setup.sh
+	exit
+
+#Récupération de l'ip de la VM :
+
+	Dans le terminal :
+	
+	su - root
+	ip addr => (192.168.1.12)
+	exit
+
+#Vérification de l'installation du Control-M Enterprise Manager :
+
+	Dans le terminal :
+	
+	su - ctmem
+	root_menu
+	1 (Activation Menu)
+	1 (Check All)
+	q
+
+	ps -aux | grep ctm
+	ps -aux | grep controlm
+	exit
+
+	Dans la barre d'adresse du navigateur :
+
+	http://localhost.localdomain:18080/
+	https://localhost.localdomain:8446/ControlM/
+
+#Ouvrir les ports 18080 et 13075 sur Control-M Entreprise Manager :
+
+	su - root
+	sudo firewall-cmd --zone=public --permanent --add-port=18080/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=13075/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=8446/tcp
+	sudo firewall-cmd --reload
+	netstat -na | grep 18080
+	netstat -na | grep 13075
+	netstat -na | grep 8446
+	exit
+	
+#Installation du client Control-M sur Windows :
+	
+	Installation framework à une version minimale 4.5.2
+
+	Installer le client Control-M sur Windows avec le fichier DROST.9.0.20.000_windows en lançant le setup
+
+	Hostname : ip de la machine
+	Port : 18080
+
+	Créer une nouvelle règle sortante dans la pare-feu Windows pour autoriser le flux sur les port 18080 et 13075
+	
+	L'utilisateur est emuser et le mot de passe celui définit lors de l'installation
+
+	telnet ip port dans le cmd pour vérifier la bonne communication
+
+#Configuration de la VM pour Control-M Server :
+
+	OS : CentOS 7
+	Espace : 65 Go (disque 1 : 20Go, disque 2 : 30Go, disque 3 : 10 Go, disque 4 : 5 Go)
+	RAM : 4000 Mo
+	Processeur : 1 CPU
+	Presse-papier partagé : Bidirectionnel
+	Glisser-Déposer : Bidirectionnel
+	Mode d'accès réseau : Accès par pont
+	Dossiers partagés : Activé (choisir son dossier avec les packages pour l'installation Control-M)
+
+#Installation de l'OS :
+	
+	Mettre le clavier à la bonne langue
+	Choisir le bon fuseau horaire
+	Choisir le bon espace de stockage (disque 1)
+	Activer la carte réseau
+	Créer un utilisateur admin autre que root (jfatahS dans mon cas)
+
+#Mises à jour de l'OS et installation des Guest Additions for VirtualBox :
+
+	Dans le terminal :
+
+	su - root
+	yum -y update
+	yum -y install epel-release
+	yum -y install make gcc kernel-headers kernel-devel perl dkms bzip2
+	exit
+	reboot
+
+	=> Insérer l'image CD des Additions Invités et le lancer
+
+#Installation de GNOME pour l'installation de Control-M en GUI :
+
+	Dans le terminal :
+
+	su - root
+	dnf -y groupinstall workstation
+	systemctl set-default graphical.target
+	exit
+	reboot
+
+#Création du filesystem /soft/controlm via la gestion par volumes logiques :
+
+	Dans le terminal :
+
+	su - root
+	yum -y install lvm2
+
+	fdisk -l
+	lsblk -f
+
+	pvcreate /dev/sdb
+	pvcreate /dev/sdc
+	pvcreate /dev/sdd
+	pvdisplay
+
+	vgcreate datavg /dev/sdb /dev/sdc
+	vgextend datavg /dev/sdd
+	vgdisplay
+
+	lvcreate -n lvsoft -L 40G datavg
+	lvcreate -n lvdoc -L 1G datavg
+	lvdisplay
+	mkfs.ext4 /dev/datavg/lvsoft
+	mkfs.ext4 /dev/datavg/lvdoc
+
+	mkdir -p /soft/controlm
+	mkdir /documentation
+	mount /dev/datavg/lvsoft /soft/controlm
+	mount /dev/datavg/lvdoc /documentation
+	lsblk -f
+
+	vi /etc/fstab
+	--------------
+	UUID=4b4b74ab-04d1-494f-8843-a6e33e0fd03f /soft/controlm                   ext4     defaults        0 0
+	UUID=3c61878d-dcac-4f7a-a6e8-c31e05876e3f /documentation                   ext4     defaults        0 0
+	--------------
+
+	df -h
+	exit
+
+#Création d'un utilisateur Control-M controlm et paramétrage :
+	
+	Dans le terminal :
+	
+	su - root
+	yum -y install csh
+	
+	/usr/sbin/useradd -u 1001 -d /soft/controlm -s /bin/csh controlm
+	passwd controlm
+	usermod -aG wheel controlm
+	groups controlm
+
+	cat /etc/passwd
+	--------------
+	controlm:x:1001:1001::/soft/controlm:/bin/csh
+	--------------
+
+	cd /soft
+	chown controlm:controlm controlm
+
+	vi /etc/sysctl.conf
+	--------------
+	kernel.shmall = 2097152
+	kernel.shmmax = 2147483648
+	kernel.shmmni = 800
+	kernel.sem = 250 32000 100 128
+	fs.file-max = 65536
+	net.ipv4.ip_local_port_range = 32768 61000
+	--------------
+	
+	/sbin/sysctl -p
+	dnf -y install libnsl
+
+	ulimit -Ha	
+
+	exit
+
+#Récupération du tar.Z dans le dossier partagé vers la VM :
+
+	Dans le terminal :
+
+	su - root
+	cd /media/sf_[Nom_du_dossier_partagé]
+	cp DROST.9.0.20.000_Linux-x86_64.tar.Z /soft/controlm/DROST.9.0.20.000_Linux-x86_64.tar.Z
+        mkdir -p /soft/em/upgrade_ctms/
+        cp DROST.9.0.20.200_Linux-x86_64.z /soft/controlm/upgrade_ctms/DROST.9.0.20.200_Linux-x86_64.z
+	cd /soft/controlm
+	chmod a+x DROST.9.0.20.000_Linux-x86_64.tar.Z
+	chown controlm:controlm DROST.9.0.20.000_Linux-x86_64.tar.Z
+	cd /soft/em/upgrade_ctms/
+        chmod a+x DROST.9.0.20.200_Linux-x86_64.z
+	chown controlm:controlm DROST.9.0.20.200_Linux-x86_64.z
+	exit
+
+#Sauvegarde de la VM avant installation de Control-M Server :
+
+	Eteindre la VM
+	Faire un snapshot
+
+#Lancement de l'installation de Control-M Server :
+
+	Dans le terminal :
+	
+	su - controlm
+	cd /soft/controlm
+	uncompress/gunzip DROST.9.0.20.000_Linux-x86_64.tar.Z
+	tar -xvf DROST.9.0.20.200_Linux-x86_64.z
+	./setup.sh
+	exit
+
+#Lancement de l'upgrade de Control-M Server :
+
+	Dans le terminal :
+	
+	su - controlm
+	cd /soft/controlm/ugrade_ctms/
+        uncompress/gunzip DROST.9.0.20.200_Linux-x86_64.z
+	tar -xvf DROST.9.0.20.000_Linux-x86_64.tar
+        cd /soft/controlm/
+	/soft/em/upgrade_ctms/setup.sh
+	exit
+
+#Récupération de l'ip de la VM :
+
+	Dans le terminal :
+	
+	su - root
+	ip addr => (192.168.1.39)
+	exit
+
+#Vérification de l'installation du Control-M Server :
+
+	Dans le terminal :
+	
+	su - controlm
+	ctm_menu
+	1 (CONTROL-M Manager)
+	1 (Check All)
+	q
+	q
+
+	ps -aux | grep ctm
+	ps -aux | grep controlm
+	exit
+
+#Ouvrir les ports 2368, 2369, 2370, 2371, 7005 et 7006 sur Control-M Entreprise Manager/Server :
+
+	Dans le terminal :
+
+	su - root
+	sudo firewall-cmd --zone=public --permanent --add-port=2368/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=2369/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=2370/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=2371/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=7005/tcp
+	sudo firewall-cmd --zone=public --permanent --add-port=7006/tcp
+	sudo firewall-cmd --reload
+	netstat -na | grep 2368
+	netstat -na | grep 2369
+	netstat -na | grep 2370
+	netstat -na | grep 2371
+	netstat -na | grep 7005
+	netstat -na | grep 7006
+	exit
+
+#Ajout du Control-M Server depuis le CCM :
+
+	Allez sur le CCM grâce au client Control-M puis cliquer sur New et ajouter Control-M Server.
+
+#Activer l'agent Control-M Server sur le Control-M Server :
+
+	Dans le terminal :
+
+	yum -y install psmisc	
+	yum -y install net-tools
+
+	su - controlm
+	ag_diag_comm
+	exit
+
+	su - root
+	cd /soft/controlm/ctm_agent/ctm/scripts
+	./start-ag
+	exit

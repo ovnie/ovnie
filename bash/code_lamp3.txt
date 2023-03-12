@@ -1,0 +1,125 @@
+#Se connecter en root :
+su
+
+#Aller au fichier :
+nano /etc/sudoers
+
+#Ajouter en dessous de root l'utilisateur à ajouter en tant que super-utilisateur :
+utilisateur    ALL=(ALL:ALL) ALL
+
+#Se déconnecter de root :
+exit
+
+#Mise à jour de la liste des fichiers disponibles dans les dépôts APT présents dans le fichier de configuration /etc/apt/sources.list :
+sudo apt update
+
+#Installation d'Apache HTTP Server (serveur HTTP), de MariaDB (gestionnaire de base de données) et de PHP (langage de programmation) avec son module pour communiquer avec MySQL :
+sudo apt install apache2 php libapache2-mod-php mariadb-server php-mysql
+
+#Installation de modules complémentaires qui peuvent être nécessaires :
+sudo apt install php-curl php-gd php-intl php-json php-mbstring php-xml php-zip
+
+#Installation du pare-feu :
+sudo apt install ufw
+
+#Autoriser le trafic sur le port 22 et 80 pour le pare-feu :
+sudo ufw allow ssh
+sudo ufw allow 22
+sudo ufw allow http
+sudo ufw allow 80
+sudo ufw allow https
+sudo ufw enable
+sudo ufw app list
+sudo ufw status
+
+#Vérification de l'installation d'Apache en rentrant dans la barre d'adresse du navigateur :
+localhost
+
+#Création de la page info.php détaillant toutes les spécificités de notre environnement PHP :
+cd /var/www/html
+sudo nano info.php
+
+#Ajouter dans le fichier précédemment créé le code PHP suivant :
+<?php
+phpinfo();
+?>
+
+#Visualisation du fichier info.php en rentrant dans la barre d'adresse du navigateur :
+localhost/info.php
+
+#L'authentification par défaut pour l'utilisateur root de MariaDB est unix_socket au lieu de password :
+sudo mysql -u root -p
+show databases;
+exit;
+
+#Création d'une base test avec la table membres contenant les champs id et pseudo :
+sudo mysql -u root -p
+CREATE DATABASE test CHARACTER SET 'utf8';
+CREATE TABLE test.membres
+(
+    id INT PRIMARY KEY NOT NULL,
+    pseudo VARCHAR(250)
+);
+INSERT INTO test.membres VALUES ('1','carmen');
+show databases;
+exit;
+
+#Téléchargement de la dernière version stable de phpMyAdmin :
+cd Téléchargements
+sudo wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+
+#Installation de la dernière version stable de phpMyAdmin :
+sudo mkdir /var/www/html/phpmyadmin
+sudo tar xvf phpMyAdmin-latest-all-languages.tar.gz --strip-components=1 -C /var/www/html/phpmyadmin
+
+#Création du fichier de configuration :
+sudo cp /var/www/html/phpmyadmin/config.sample.inc.php /var/www/html/phpmyadmin/config.inc.php
+sudo nano /var/www/html/phpmyadmin/config.inc.php
+
+#Ajouter dans ce fichier de configuration une phrase de passe secrète à la ligne :
+$cfg['blowfish_secret'] = 'my_secret_passphrase';
+
+#Réaliser des permissions :
+sudo chmod 660 /var/www/html/phpmyadmin/config.inc.php
+sudo chown –R www-data:www-data /var/www/html/phpmyadmin
+
+#L'authentification de l'utilisateur root de MariaDB au moyen d'unix_socket ne permet pas de se connecter avec phpMyAdmin. Il nous faut donc pour cela créer un utilisateur super-administrateur ayant les pleins pouvoirs dans MariaDB :
+sudo mysql -u root -p
+CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'my_password';
+GRANT ALL PRIVILEGES ON * . * TO 'my_user'@'localhost';
+FLUSH PRIVILEGES;
+QUIT;
+
+#Redémarrer Apache :
+sudo systemctl restart apache2
+
+#Accéder et se connecter à phpMyAdmin en rentrant dans la barre d'adresse du navigateur :
+localhost/phpmyadmin
+
+#Création d'une page PHP qui se connecte à la base de données test :
+cd /var/www/html
+sudo nano test.php
+
+#Ajouter dans le fichier précédemment créé le code PHP suivant :
+<?php
+//Connexion à la base de données en PDO :
+try
+{
+	$bdd = new PDO('mysql:host=localhost;dbname=test;charset=utf8',
+	'user','password');
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+
+$membres = $bdd->query('SELECT * FROM membres');
+?>
+
+
+	<?php while($membre = $membres->fetch()) { ?>
+	<?php echo $membre['id'] ?> : <?php echo $membre['pseudo'] ?>
+	<?php } ?>
+
+#Visualisation de la table membres en rentrant dans la barre d'adresse du navigateur :
+localhost/test.php
